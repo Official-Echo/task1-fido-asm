@@ -1,9 +1,16 @@
 	default rel
+
+	%ifidn  __OUTPUT_FORMAT__, elf64
+%define arg1 rdi
+%else
+%define arg1 rcx
+%endif
+
 global get_two_thirds_node
 section .text
 
 get_two_thirds_node:
-	mov     rcx, [rcx]
+	mov     rcx, [arg1]
 	test    rcx, rcx
 	jz      return_none
 	mov     rax, [rcx]
@@ -40,3 +47,7 @@ return_none:
 return_res:
 	mov     rax, rcx
 	ret
+
+	%ifidn  __OUTPUT_FORMAT__, elf64
+section .note.GNU-stack noalloc noexec nowrite progbits
+%endif
